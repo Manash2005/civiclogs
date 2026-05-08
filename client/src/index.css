@@ -1,1 +1,55 @@
 @import "tailwindcss";
+
+:root {
+  --primary: #588157;
+  --secondary: #d9f1d0;
+  --tertiary: #DAD7CD;
+  --neutral: #767873;
+  --danger: #DC2626;
+}
+
+/* Color utility classes */
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.bg-secondary {
+  background-color: var(--secondary);
+}
+
+.bg-tertiary {
+  background-color: var(--tertiary);
+}
+
+.bg-neutral {
+  background-color: var(--neutral);
+}
+
+.bg-danger {
+  background-color: var(--danger);
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.text-secondary {
+  color: var(--secondary);
+}
+
+.text-tertiary {
+  color: var(--tertiary);
+}
+
+.text-neutral {
+  color: var(--neutral);
+}
+
+.text-danger {
+  color: var(--danger);
+}
+
+/* Font family */
+.font-sans {
+  font-family: "Inter", sans-serif;
+}
