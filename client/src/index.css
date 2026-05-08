@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #588157;
+  --primary: #4e734e;
   --secondary: #d9f1d0;
   --tertiary: #DAD7CD;
   --neutral: #767873;
@@ -52,4 +52,7 @@
 /* Font family */
 .font-sans {
   font-family: "Inter", sans-serif;
+}
+.font-script {
+  font-family: "Dancing Script";
 }
