@@ -1,4 +1,4 @@
-import asyncHandler from "../utils/asyncHandler";
+import asyncHandler from "../utils/asyncHandler.js";
 import User from "../models/user.js";
 import generateJWT from "../utils/generateJWT.js";
 
@@ -6,7 +6,7 @@ import generateJWT from "../utils/generateJWT.js";
 // @route   POST /api/auth/register
 // @access  Public
 const registerUser = asyncHandler(
-  async (req, res) => {
+  async (req, res, next) => {
     const { name, email, password } = req.body;
 
     const userExists = await User.findOne({ email });
@@ -41,7 +41,7 @@ const registerUser = asyncHandler(
 //@route   POST /api/auth/login
 //@access  Public
 const loginUser = asyncHandler(
-  async (req, res) => {
+  async (req, res, next) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });

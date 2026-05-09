@@ -1,10 +1,38 @@
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import {useState} from 'react';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
-function Login() {
+import { login } from '../services/authServices';
 
+function Login() {
+  const navigate = useNavigate();
   const[role, setRole] = useState('Citizen')
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await login({ email, password });
+      // Store token in localStorage
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response));
+      // Redirect to dashboard or home
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
   return (
   <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
 
@@ -72,7 +100,7 @@ function Login() {
           ))}
         </div>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <label className="block text-sm font-medium mb-2 text-neutral">
           Email Address
         </label>
@@ -82,7 +110,10 @@ function Login() {
           <input
             type="email"
             placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full outline-none text-sm"
+            required
           />
         </div>
 
@@ -101,7 +132,10 @@ function Login() {
           <input
              type={showPassword ? "text" : "password"}
             placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full outline-none text-sm"
+            required
           />
           {/* ICON */}
           {showPassword ? (
@@ -119,9 +153,15 @@ function Login() {
           )}
         </div>
 
+        {error && <p className="text-danger text-sm mb-4">{error}</p>}
+
         {/* BUTTON */}
-        <button className="w-full bg-primary text-white py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/90 transition-all duration-300">
-          Sign In <ArrowRight size={18} />
+        <button 
+          type="submit" 
+          disabled={loading}
+          className="w-full bg-primary text-white py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/90 transition-all duration-300 disabled:opacity-50"
+        >
+          {loading ? 'Signing In...' : 'Sign In'} <ArrowRight size={18} />
         </button>
       </form>
       

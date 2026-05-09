@@ -1,10 +1,49 @@
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import {useState} from 'react';
 import {User, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { register } from '../services/authServices';
+
 function Signup() {
+  const navigate = useNavigate();
   const[role, setRole] = useState('Citizen')
   const [showPassword, setShowPassword] = useState(false);   
   const[showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await register({ 
+        name, 
+        email, 
+        password,
+        role: role.toLowerCase()
+      });
+      // Store token in localStorage
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response));
+      // Redirect to dashboard or home
+      navigate('/login');
+    } catch (err) {
+      setError(err.message || 'Signup failed');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
@@ -71,7 +110,7 @@ function Signup() {
           ))}
         </div>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <label className="block text-sm font-medium mb-2 text-neutral">
           Full Name
         </label>
@@ -81,7 +120,10 @@ function Signup() {
           <input
             type="text"
             placeholder="Enter your full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             className="w-full outline-none text-sm"
+            required
           />
         </div>
 
@@ -94,7 +136,10 @@ function Signup() {
           <input
             type="email"
             placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full outline-none text-sm"
+            required
           />
         </div>
 
@@ -110,7 +155,10 @@ function Signup() {
           <input
              type={showPassword ? "text" : "password"}
             placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full outline-none text-sm"
+            required
           />
           {/* ICON */}
           {showPassword ? (
@@ -139,7 +187,10 @@ function Signup() {
           <input
              type={showConfirmPassword ? "text" : "password"}
             placeholder="••••••••"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full outline-none text-sm"
+            required
           />
           {/* ICON */}
           {showConfirmPassword ? (
@@ -157,9 +208,15 @@ function Signup() {
           )}
         </div>
 
+        {error && <p className="text-danger text-sm mb-4">{error}</p>}
+
         {/* BUTTON */}
-        <button className="w-full bg-primary text-white py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/90 transition-all duration-300">
-          Sign In <ArrowRight size={18} />
+        <button 
+          type="submit"
+          disabled={loading}
+          className="w-full bg-primary text-white py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/90 transition-all duration-300 disabled:opacity-50"
+        >
+          {loading ? 'Creating Account...' : 'Sign Up'} <ArrowRight size={18} />
         </button>
       </form>
       
