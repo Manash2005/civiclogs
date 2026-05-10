@@ -23,7 +23,15 @@ function Login() {
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response));
       // Redirect to dashboard or home
-      navigate('/');
+      if(response.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else if(response.role === 'coordinator') {
+        navigate('/coordinator/dashboard');
+      } else if(response.role === 'volunteer') {
+        navigate('/volunteer/dashboard');
+      } else {
+        navigate('/citizen/dashboard');
+      }
     } catch (err) {
       setError(err.message || 'Login failed');
     } finally {
